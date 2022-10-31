@@ -1,7 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const notes = require('./db/db.json');
+// const notes = require('./db/db.json');
 const uuid = require('./helpers/uuid.js');
 
 const PORT = 3001;
@@ -17,7 +17,9 @@ app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './public/notes.html'));
 });
 
-app.get('/api/notes', (req, res) => res.json(notes));
+app.get('/api/notes', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/db/db.json'));
+});
 
 app.post('/api/notes', (req, res) => {
     console.log(req.body);
@@ -30,7 +32,7 @@ app.post('/api/notes', (req, res) => {
         id: uuid(),
       };
 
-    fs.readFile('./db/db.json', (err, data) => {
+    fs.readFile('./public/db/db.json', (err, data) => {
         if (err) {
           console.error(err);
         } else {
@@ -42,7 +44,7 @@ app.post('/api/notes', (req, res) => {
   
           // Write updated notes back to the file
           fs.writeFile(
-            './db/db.json',
+            './public/db/db.json',
             JSON.stringify(parsedNotes, null, 4),
             (writeErr) =>
               writeErr
@@ -52,11 +54,11 @@ app.post('/api/notes', (req, res) => {
         }
     });
 
-    fs.readFile('./db/db.json', (err, data) => {
+    fs.readFile('./public/db/db.json', (err, data) => {
       if(err) {
         console.log(err);
       }
-      console.log(data);
+        console.log(JSON.parse(data));
     });
 
 });
