@@ -18,48 +18,62 @@ app.get('/notes', (req, res) => {
 });
 
 app.get('/api/notes', (req, res) => {
-  res.sendFile(path.join(__dirname, './public/db/db.json'));
-});
+  fs.readFile('./db/db.json', (err, data) => {
+    if (err) {
+      console.error(err);
+    } else {
+      // Convert string into JSON object
+      const parsedNotes = JSON.parse(data)
+
+  
+      res.json(parsedNotes)
+    }
+})});
 
 app.post('/api/notes', (req, res) => {
-    console.log(req.body);
+  console.log(req.body);
 
-    const { title, text } = req.body;
+  const { title, text } = req.body;
 
-      const newNote = {
-        title,
-        text,
-        id: uuid(),
-      };
+    const newNote = {
+      title,
+      text,
+      id: uuid(),
+    };
 
-    fs.readFile('./public/db/db.json', (err, data) => {
-        if (err) {
-          console.error(err);
-        } else {
-          // Convert string into JSON object
-          const parsedNotes = JSON.parse(data);
-  
-          // Add a new note
-          parsedNotes.push(newNote);
-  
-          // Write updated notes back to the file
-          fs.writeFile(
-            './public/db/db.json',
-            JSON.stringify(parsedNotes, null, 4),
-            (writeErr) =>
-              writeErr
-                ? console.error(writeErr)
-                : console.info('Successfully updated Notes!')
-          );
-        }
-    });
+  fs.readFile('./db/db.json', (err, data) => {
+      if (err) {
+        console.error(err);
+      } else {
+        // Convert string into JSON object
+        const parsedNotes = JSON.parse(data);
 
-    fs.readFile('./public/db/db.json', (err, data) => {
-      if(err) {
-        console.log(err);
+        // Add a new note
+        parsedNotes.push(newNote);
+
+        // Write updated notes back to the file
+        fs.writeFile(
+          './db/db.json',
+          JSON.stringify(parsedNotes, null, 4),
+          (writeErr) =>
+            writeErr
+              ? console.error(writeErr)
+              : console.info('Successfully updated Notes!')
+        );
       }
-        console.log(JSON.parse(data));
-    });
+
+  });
+
+  fs.readFile('./db/db.json', (err, data) => {
+    if (err) {
+      console.error(err);
+    } else {
+      // Convert string into JSON object
+      const parsedNotes = JSON.parse(data)
+  
+      res.json(parsedNotes)
+    }
+  })
 
 });
 
