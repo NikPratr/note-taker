@@ -2,6 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const notes = require('./db/db.json');
+const uuid = require('./helpers/uuid.js');
 
 const PORT = 3001;
 
@@ -21,7 +22,13 @@ app.get('/api/notes', (req, res) => res.json(notes));
 app.post('/api/notes', (req, res) => {
     console.log(req.body);
 
-    const newNote = req.body;
+    const { title, text } = req.body;
+
+      const newNote = {
+        title,
+        text,
+        id: uuid(),
+      };
 
     fs.readFile('./db/db.json', (err, data) => {
         if (err) {
@@ -43,6 +50,13 @@ app.post('/api/notes', (req, res) => {
                 : console.info('Successfully updated Notes!')
           );
         }
+    });
+
+    fs.readFile('./db/db.json', (err, data) => {
+      if(err) {
+        console.log(err);
+      }
+      console.log(data);
     });
 
 });
