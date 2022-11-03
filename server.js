@@ -13,10 +13,12 @@ app.use(express.json());
 
 app.use(express.static('public'));
 
+// Grab notes.html
 app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, './public/notes.html'));
 });
 
+// Notes functionality
 app.get('/api/notes', (req, res) => {
   fs.readFile('./db/db.json', (err, data) => {
     if (err) {
@@ -41,6 +43,7 @@ app.post('/api/notes', (req, res) => {
       id: uuid(),
     };
 
+  // Gets current state of notes list from db.json
   fs.readFile('./db/db.json', (err, data) => {
       if (err) {
         console.error(err);
@@ -64,6 +67,7 @@ app.post('/api/notes', (req, res) => {
 
   });
 
+  // Gets updated state of notes list from db.json
   fs.readFile('./db/db.json', (err, data) => {
     if (err) {
       console.error(err);
@@ -74,9 +78,9 @@ app.post('/api/notes', (req, res) => {
       res.json(parsedNotes)
     }
   })
-
 });
 
+// All undefined paths take you back to the main page
 app.get('/*', (req, res) => {
     res.sendFile(path.join(__dirname, './public/index.html'));
 });
